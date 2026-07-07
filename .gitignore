@@ -1,0 +1,25 @@
+# Build output cua .NET
+bin/
+obj/
+
+# Visual Studio / VS Code local files
+.vs/
+.vscode/
+
+# User-specific files
+*.user
+*.suo
+
+# Documents / training materials
+*.docx
+*.pdf
+*.pptx
+*.xlsx
+~$*
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
