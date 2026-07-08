@@ -133,6 +133,7 @@ feat: add product model
 feat: print sample products
 feat: add student age calculation
 fix: add product model content
+docs: update day 1 readme
 ```
 
 ## 8. Ghi chú học tập
@@ -142,6 +143,8 @@ fix: add product model content
 - Nên dùng `git diff --staged` để kiểm tra nội dung đã add trước khi commit.
 - Không nên dùng `git add .` khi chưa chắc muốn commit toàn bộ file.
 - File tài liệu khóa học và file local nên được đưa vào `.gitignore`.
+- Nếu GitHub báo hai branch có lịch sử khác nhau, có thể cần merge với `--allow-unrelated-histories`.
+- Khi gặp conflict, phải mở file bị conflict, giữ nội dung đúng, xóa các conflict marker rồi commit merge.
 
 ## 9. Checklist Day 1
 
