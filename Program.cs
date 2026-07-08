@@ -20,6 +20,7 @@ while (isRunning)
     Console.WriteLine("3. Cap nhat gia va so luong san pham");
     Console.WriteLine("4. Xoa san pham");
     Console.WriteLine("5. Them san pham");
+    Console.WriteLine("6. Loc san pham ton kho thap");
     Console.WriteLine("0. Thoat");
     Console.Write("Nhap lua chon: ");
 
@@ -172,6 +173,7 @@ while (isRunning)
                 break;
             }
 
+            //int newId = products.Count == 0 ? 1 : products.Max(product => product.Id) + 1;
             int newId = products.Max(product => product.Id) + 1;
             Product newProduct = new Product(newId, newName, createPrice, createQuantity);
 
@@ -179,6 +181,26 @@ while (isRunning)
 
             Console.WriteLine("Them san pham thanh cong:");
             Console.WriteLine(newProduct);
+            break;
+
+        case "6":
+            List<Product> lowStockProducts = products
+                .Where(product => product.Quantity < 5)
+                .ToList();
+
+            if (lowStockProducts.Count == 0)
+            {
+                Console.WriteLine("Khong co san pham ton kho thap.");
+            }
+            else
+            {
+                Console.WriteLine("Danh sach san pham ton kho thap:");
+
+                foreach (Product product in lowStockProducts)
+                {
+                    Console.WriteLine(product);
+                }
+            }
             break;
 
         case "0":
