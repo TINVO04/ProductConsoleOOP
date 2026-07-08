@@ -2,7 +2,7 @@
 
 Mini project Console App dùng để thực hành OOP trong C# theo lộ trình tuần 2 của khóa .NET.
 
-Project hiện tập trung vào quản lý sản phẩm bằng dữ liệu in-memory với `List<Product>`, có menu CRUD, validate dữ liệu, xử lý tồn kho và CI build tự động bằng GitHub Actions.
+Project hiện tập trung vào quản lý sản phẩm bằng dữ liệu in-memory với `List<Product>`, có menu CRUD, validate dữ liệu, xử lý tồn kho, tách logic qua service/interface và CI build tự động bằng GitHub Actions.
 
 ---
 
@@ -31,6 +31,7 @@ Mục tiêu của project:
 - Biết dùng `List<Product>` để quản lý danh sách object.
 - Biết làm CRUD in-memory trong Console App.
 - Biết tách code theo thư mục rõ ràng.
+- Biết tách logic xử lý sang service và interface.
 - Biết dùng Git branch, commit, Pull Request và CI cơ bản.
 
 ---
@@ -62,6 +63,7 @@ Chi tiết chức năng:
 
 - Xem danh sách sản phẩm.
 - Tìm sản phẩm theo tên, không phân biệt chữ hoa/thường.
+- Tự xử lý khoảng trắng thừa khi tìm kiếm, ví dụ `lap ` vẫn tìm được `Laptop`.
 - Thêm sản phẩm mới.
 - Cập nhật giá và số lượng sản phẩm theo Id.
 - Xóa sản phẩm theo Id.
@@ -111,9 +113,13 @@ ProductConsoleOOP/
 ├── .github/
 │   └── workflows/
 │       └── dotnet-ci.yml
+├── Interfaces/
+│   └── IProductService.cs
 ├── Models/
 │   ├── Product.cs
 │   └── Student.cs
+├── Services/
+│   └── ProductService.cs
 ├── Validators/
 │   └── ProductValidator.cs
 ├── Program.cs
@@ -126,7 +132,9 @@ Giải thích nhanh:
 
 | Đường dẫn | Vai trò |
 |---|---|
-| `Program.cs` | Điểm bắt đầu chạy chương trình, chứa menu Console hiện tại. |
+| `Program.cs` | Điểm bắt đầu chạy chương trình, chứa menu Console và gọi service. |
+| `Interfaces/IProductService.cs` | Interface mô tả các hành động quản lý sản phẩm. |
+| `Services/ProductService.cs` | Service chứa dữ liệu mẫu và logic CRUD sản phẩm. |
 | `Models/Product.cs` | Class Product, đại diện cho sản phẩm. |
 | `Models/Student.cs` | Class Student, dùng cho mini challenge tính tuổi. |
 | `Validators/ProductValidator.cs` | Class kiểm tra dữ liệu sản phẩm. |
@@ -178,6 +186,21 @@ public int Quantity { get; private set; }
 - `TryParse`: chuyển input từ chuỗi sang số một cách an toàn.
 - `Max`: lấy giá trị lớn nhất trong danh sách.
 - Toán tử 3 ngôi: `condition ? valueIfTrue : valueIfFalse`.
+
+### Service và Interface
+
+- `interface`: hợp đồng mô tả class cần có những method nào.
+- `service`: class chứa logic xử lý nghiệp vụ chính.
+- `IProductService`: mô tả các hành động quản lý sản phẩm.
+- `ProductService`: thực thi các hành động như lấy danh sách, tìm kiếm, thêm, sửa, xóa và lọc tồn kho thấp.
+- `Program.cs` chỉ nên lo nhập/xuất Console và gọi service, không nên chứa toàn bộ logic CRUD.
+- Tách service giúp code dễ đọc hơn, dễ test hơn và dễ mở rộng hơn.
+
+Ví dụ dùng interface trong menu:
+
+```csharp
+IProductService productService = new ProductService();
+```
 
 ---
 
@@ -260,6 +283,32 @@ Checklist:
 
 ---
 
+### Day 4 - Service, Interface và tách trách nhiệm
+
+Đã làm:
+
+- Tạo thư mục `Interfaces`.
+- Tạo `IProductService` để mô tả các hành động quản lý sản phẩm.
+- Tạo thư mục `Services`.
+- Tạo `ProductService` để chứa dữ liệu mẫu và logic CRUD.
+- Chuyển logic lấy danh sách, tìm kiếm, thêm, cập nhật, xóa và lọc tồn kho thấp từ `Program.cs` sang `ProductService`.
+- Refactor `Program.cs` để chỉ còn xử lý menu, nhập input, in output và gọi service.
+- Sửa tìm kiếm để tự `Trim()` keyword, giúp input như `lap ` vẫn tìm được `Laptop`.
+- Build project thành công.
+- Test lại menu bằng `dotnet run` và xác nhận các chức năng chính vẫn hoạt động.
+
+Checklist:
+
+- [x] Có `Interfaces/IProductService.cs`.
+- [x] Có `Services/ProductService.cs`.
+- [x] `ProductService` implement `IProductService`.
+- [x] `Program.cs` gọi service thay vì tự xử lý toàn bộ CRUD.
+- [x] Tìm kiếm xử lý khoảng trắng thừa bằng `Trim()`.
+- [x] Build pass sau khi refactor.
+- [x] Test lại xem danh sách, tìm kiếm, thêm, cập nhật, xóa và lọc tồn kho thấp.
+
+---
+
 ## Git workflow
 
 Branch đã thực hành:
@@ -268,6 +317,7 @@ Branch đã thực hành:
 feature/week2-day01-tinvo
 feature/week2-day02-tinvo
 feature/week2-day03-tinvo
+feature/week2-day04-tinvo
 ```
 
 Một số commit tiêu biểu:
@@ -285,6 +335,8 @@ feat: add product update and delete menu
 feat: add product create menu
 feat: add low stock product filter
 docs: update day 3 readme
+feat: add product service abstraction
+refactor: use product service in console menu
 ```
 
 Quy ước commit:
@@ -310,3 +362,5 @@ Quy ước commit:
 - Sau mỗi ngày nên tạo branch riêng và Pull Request riêng.
 - Nếu GitHub báo hai branch có lịch sử khác nhau, có thể cần merge với `--allow-unrelated-histories`.
 - Khi gặp conflict, phải mở file bị conflict, giữ nội dung đúng, xóa conflict marker rồi commit merge.
+- Khi refactor, nên giữ nguyên hành vi cũ trước, sau đó test lại để chắc chắn không làm hỏng chức năng.
+- Khi phát hiện bug nhỏ trong lúc test, nên sửa ngay và ghi nhận trong commit liên quan nếu nó đi cùng phần refactor.
