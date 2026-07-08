@@ -173,8 +173,7 @@ while (isRunning)
                 break;
             }
 
-            //int newId = products.Count == 0 ? 1 : products.Max(product => product.Id) + 1;
-            int newId = products.Max(product => product.Id) + 1;
+            int newId = products.Count == 0 ? 1 : products.Max(product => product.Id) + 1;
             Product newProduct = new Product(newId, newName, createPrice, createQuantity);
 
             products.Add(newProduct);
