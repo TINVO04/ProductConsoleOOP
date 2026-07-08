@@ -16,6 +16,7 @@ while (isRunning)
     Console.WriteLine();
     Console.WriteLine("===== PRODUCT CONSOLE OOP =====");
     Console.WriteLine("1. Xem danh sach san pham");
+    Console.WriteLine("2. Tim san pham theo ten");
     Console.WriteLine("0. Thoat");
     Console.Write("Nhap lua chon: ");
 
@@ -30,6 +31,35 @@ while (isRunning)
             foreach (Product product in products)
             {
                 Console.WriteLine(product);
+            }
+            break;
+
+        case "2":
+            Console.Write("Nhap ten san pham can tim: ");
+            string? keyword = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                Console.WriteLine("Tu khoa tim kiem khong duoc rong.");
+                break;
+            }
+
+            List<Product> foundProducts = products
+                .Where(product => product.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (foundProducts.Count == 0)
+            {
+                Console.WriteLine("Khong tim thay san pham phu hop.");
+            }
+            else
+            {
+                Console.WriteLine("Ket qua tim kiem:");
+
+                foreach (Product product in foundProducts)
+                {
+                    Console.WriteLine(product);
+                }
             }
             break;
 
