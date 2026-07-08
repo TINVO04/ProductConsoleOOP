@@ -1,4 +1,6 @@
 ﻿using ProductConsoleOOP.Models;
+using ProductConsoleOOP.Validators;
+
 
 Console.WriteLine("Product Console OOP - Day 1");
 Console.WriteLine("Danh sach san pham mau:");
@@ -23,3 +25,44 @@ Console.WriteLine("Thong tin hoc vien mau:");
 Student student = new Student(1, "Nguyen Van A", new DateTime(2004, 12, 20));
 
 Console.WriteLine(student);
+
+
+
+Console.WriteLine();
+Console.WriteLine("Day 2 - Stock methods test:");
+
+Console.WriteLine($"Before increase stock: {laptop}");
+
+bool increaseResult = laptop.IncreaseStock(2);
+Console.WriteLine($"Increase stock by 2 result: {increaseResult}");
+Console.WriteLine($"After increase stock: {laptop}");
+
+bool decreaseResult = laptop.DecreaseStock(1);
+Console.WriteLine($"Decrease stock by 1 result: {decreaseResult}");
+Console.WriteLine($"After decrease stock: {laptop}");
+
+bool invalidDecreaseResult = laptop.DecreaseStock(100);
+Console.WriteLine($"Decrease stock by 100 result: {invalidDecreaseResult}");
+Console.WriteLine($"After invalid decrease stock: {laptop}");
+
+Console.WriteLine();
+Console.WriteLine("Day 2 - Product validator test:");
+
+ProductValidator validator = new ProductValidator();
+Product invalidProduct = new Product(6, "", -5000, -3);
+
+List<string> errors = validator.Validate(invalidProduct);
+
+if (errors.Count == 0)
+{
+    Console.WriteLine("Invalid product is valid.");
+}
+else
+{
+    Console.WriteLine("Invalid product has errors:");
+
+    foreach (string error in errors)
+    {
+        Console.WriteLine($"- {error}");
+    }
+}
