@@ -15,3 +15,11 @@ Console.WriteLine(mouse);
 Console.WriteLine(keyboard);
 Console.WriteLine(monitor);
 Console.WriteLine(headset);
+
+
+Console.WriteLine();
+Console.WriteLine("Thong tin hoc vien mau:");
+
+Student student = new Student(1, "Nguyen Van A", new DateTime(2004, 12, 20));
+
+Console.WriteLine(student);
