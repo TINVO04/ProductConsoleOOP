@@ -13,6 +13,8 @@
 - [9. Ghi chú học tập](#9-ghi-chú-học-tập)
 - [10. Checklist Day 1](#10-checklist-day-1)
 - [11. Checklist Day 2](#11-checklist-day-2)
+- [12. Nội dung đã làm trong Day 3](#12-nội-dung-đã-làm-trong-day-3)
+- [13. Checklist Day 3](#13-checklist-day-3)
 
 ## 1. Mục tiêu project
 
@@ -92,13 +94,14 @@ Chạy project:
 dotnet run
 ```
 
-Kết quả chương trình sẽ in ra:
+Kết quả chương trình sẽ hiển thị menu thao tác sản phẩm:
 
-- Danh sách 5 sản phẩm mẫu.
-- Tổng giá trị từng sản phẩm = Price * Quantity.
-- Thông tin học viên mẫu và tuổi tính từ DateOfBirth.
-- Kết quả test nhập kho và xuất kho.
-- Kết quả validate sản phẩm sai dữ liệu.
+- Xem danh sách sản phẩm.
+- Tìm sản phẩm theo tên.
+- Cập nhật giá và số lượng sản phẩm.
+- Xóa sản phẩm theo Id.
+- Thêm sản phẩm mới.
+- Lọc sản phẩm tồn kho thấp.
 
 ## 5. Nội dung đã làm trong Day 1
 
@@ -290,3 +293,64 @@ feat: test product validation and stock methods
 - [x] `ProductValidator` kiểm tra `Name`, `Price`, `Quantity`.
 - [x] `Program.cs` có test các case đúng/sai.
 - [x] Có CI build project bằng GitHub Actions.
+
+## 12. Nội dung đã làm trong Day 3
+
+### Mục tiêu
+
+Day 3 tập trung vào `List<Product>`, CRUD in-memory, tìm kiếm và lọc dữ liệu sản phẩm.
+
+### Các chức năng chính
+
+File `Program.cs` được refactor từ demo tuyến tính sang menu console có vòng lặp.
+
+Các chức năng đã hoàn thành:
+
+- Dùng `List<Product>` để quản lý danh sách sản phẩm trong bộ nhớ.
+- Hiển thị menu console bằng vòng lặp `while`.
+- Xem danh sách sản phẩm.
+- Tìm sản phẩm theo tên bằng `Where` và `Contains`.
+- Xử lý trường hợp không tìm thấy dữ liệu.
+- Cập nhật giá và số lượng sản phẩm theo Id.
+- Cập nhật số lượng thông qua `IncreaseStock` và `DecreaseStock` để giữ đúng encapsulation.
+- Xóa sản phẩm theo Id bằng `Remove`.
+- Thêm sản phẩm mới vào danh sách bằng `Add`.
+- Tự sinh Id mới bằng cách lấy Id lớn nhất cộng 1.
+- Xử lý trường hợp danh sách rỗng khi thêm sản phẩm mới.
+- Lọc sản phẩm tồn kho thấp với điều kiện `Quantity < 5`.
+
+### Kiến thức đã học trong Day 3
+
+- `List<Product>`: danh sách chứa nhiều object Product.
+- CRUD: Create, Read, Update, Delete.
+- In-memory data: dữ liệu chỉ tồn tại trong lúc chương trình đang chạy.
+- `foreach`: duyệt từng phần tử trong danh sách.
+- `FirstOrDefault`: tìm một phần tử, có thể trả về null nếu không tìm thấy.
+- `Where`: lọc nhiều phần tử theo điều kiện.
+- `ToList`: chuyển kết quả lọc thành danh sách.
+- `TryParse`: chuyển dữ liệu nhập từ chuỗi sang số một cách an toàn.
+- `Max`: lấy giá trị lớn nhất trong danh sách.
+- Toán tử 3 ngôi `condition ? valueIfTrue : valueIfFalse`.
+
+### Ghi chú về dữ liệu
+
+Dữ liệu sản phẩm hiện tại là in-memory:
+
+- Khi chương trình đang chạy, thêm/sửa/xóa sẽ có hiệu lực.
+- Khi tắt chương trình và chạy lại, danh sách quay về dữ liệu mẫu ban đầu.
+- Project chưa sử dụng database hoặc file để lưu dữ liệu.
+
+## 13. Checklist Day 3
+
+- [x] Đồng bộ local sau khi merge Day 2.
+- [x] Tạo branch `feature/week2-day03-tinvo`.
+- [x] Refactor `Program.cs` để dùng `List<Product>`.
+- [x] Có menu xem danh sách sản phẩm.
+- [x] Có menu tìm sản phẩm theo tên.
+- [x] Có xử lý không tìm thấy dữ liệu.
+- [x] Có menu thêm sản phẩm.
+- [x] Có menu cập nhật giá và số lượng sản phẩm.
+- [x] Có menu xóa sản phẩm.
+- [x] Có mini challenge lọc sản phẩm tồn kho thấp.
+- [x] Có xử lý input sai bằng `TryParse`.
+- [x] Có xử lý trường hợp danh sách rỗng khi sinh Id mới.
