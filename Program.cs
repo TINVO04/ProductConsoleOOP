@@ -1,13 +1,8 @@
-﻿using ProductConsoleOOP.Models;
+﻿using ProductConsoleOOP.Interfaces;
+using ProductConsoleOOP.Models;
+using ProductConsoleOOP.Services;
 
-List<Product> products = new List<Product>
-{
-    new Product(1, "Laptop", 15000000, 3),
-    new Product(2, "Mouse", 250000, 10),
-    new Product(3, "Keyboard", 750000, 5),
-    new Product(4, "Monitor", 3500000, 2),
-    new Product(5, "Headset", 1200000, 4)
-};
+IProductService productService = new ProductService();
 
 bool isRunning = true;
 
@@ -32,7 +27,7 @@ while (isRunning)
             Console.WriteLine();
             Console.WriteLine("Danh sach san pham:");
 
-            foreach (Product product in products)
+            foreach (Product product in productService.GetAll())
             {
                 Console.WriteLine(product);
             }
@@ -48,9 +43,7 @@ while (isRunning)
                 break;
             }
 
-            List<Product> foundProducts = products
-                .Where(product => product.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            List<Product> foundProducts = productService.SearchByName(keyword);
 
             if (foundProducts.Count == 0)
             {
@@ -77,7 +70,7 @@ while (isRunning)
                 break;
             }
 
-            Product? productToUpdate = products.FirstOrDefault(product => product.Id == updateId);
+            Product? productToUpdate = productService.GetById(updateId);
 
             if (productToUpdate == null)
             {
@@ -91,7 +84,7 @@ while (isRunning)
             Console.Write("Nhap gia moi: ");
             string? newPriceInput = Console.ReadLine();
 
-            if (!decimal.TryParse(newPriceInput, out decimal newPrice) || newPrice <= 0)
+            if (!decimal.TryParse(newPriceInput, out decimal newPrice))
             {
                 Console.WriteLine("Gia moi khong hop le.");
                 break;
@@ -100,27 +93,22 @@ while (isRunning)
             Console.Write("Nhap so luong moi: ");
             string? newQuantityInput = Console.ReadLine();
 
-            if (!int.TryParse(newQuantityInput, out int newQuantity) || newQuantity < 0)
+            if (!int.TryParse(newQuantityInput, out int newQuantity))
             {
                 Console.WriteLine("So luong moi khong hop le.");
                 break;
             }
 
-            productToUpdate.Price = newPrice;
+            bool isUpdated = productService.Update(updateId, newPrice, newQuantity);
 
-            int quantityDifference = newQuantity - productToUpdate.Quantity;
-
-            if (quantityDifference > 0)
+            if (!isUpdated)
             {
-                productToUpdate.IncreaseStock(quantityDifference);
-            }
-            else if (quantityDifference < 0)
-            {
-                productToUpdate.DecreaseStock(Math.Abs(quantityDifference));
+                Console.WriteLine("Cap nhat san pham that bai. Vui long kiem tra gia va so luong.");
+                break;
             }
 
             Console.WriteLine("Cap nhat san pham thanh cong:");
-            Console.WriteLine(productToUpdate);
+            Console.WriteLine(productService.GetById(updateId));
             break;
 
         case "4":
@@ -133,15 +121,14 @@ while (isRunning)
                 break;
             }
 
-            Product? productToDelete = products.FirstOrDefault(product => product.Id == deleteId);
+            bool isDeleted = productService.Delete(deleteId);
 
-            if (productToDelete == null)
+            if (!isDeleted)
             {
                 Console.WriteLine("Khong tim thay san pham can xoa.");
                 break;
             }
 
-            products.Remove(productToDelete);
             Console.WriteLine("Xoa san pham thanh cong.");
             break;
 
@@ -173,19 +160,14 @@ while (isRunning)
                 break;
             }
 
-            int newId = products.Count == 0 ? 1 : products.Max(product => product.Id) + 1;
-            Product newProduct = new Product(newId, newName, createPrice, createQuantity);
-
-            products.Add(newProduct);
+            Product newProduct = productService.Create(newName, createPrice, createQuantity);
 
             Console.WriteLine("Them san pham thanh cong:");
             Console.WriteLine(newProduct);
             break;
 
         case "6":
-            List<Product> lowStockProducts = products
-                .Where(product => product.Quantity < 5)
-                .ToList();
+            List<Product> lowStockProducts = productService.GetLowStockProducts(5);
 
             if (lowStockProducts.Count == 0)
             {
