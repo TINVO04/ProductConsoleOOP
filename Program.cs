@@ -19,6 +19,7 @@ while (isRunning)
     Console.WriteLine("2. Tim san pham theo ten");
     Console.WriteLine("3. Cap nhat gia va so luong san pham");
     Console.WriteLine("4. Xoa san pham");
+    Console.WriteLine("5. Them san pham");
     Console.WriteLine("0. Thoat");
     Console.Write("Nhap lua chon: ");
 
@@ -141,6 +142,43 @@ while (isRunning)
 
             products.Remove(productToDelete);
             Console.WriteLine("Xoa san pham thanh cong.");
+            break;
+
+        case "5":
+            Console.Write("Nhap ten san pham: ");
+            string? newName = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                Console.WriteLine("Ten san pham khong duoc rong.");
+                break;
+            }
+
+            Console.Write("Nhap gia san pham: ");
+            string? createPriceInput = Console.ReadLine();
+
+            if (!decimal.TryParse(createPriceInput, out decimal createPrice) || createPrice <= 0)
+            {
+                Console.WriteLine("Gia san pham khong hop le.");
+                break;
+            }
+
+            Console.Write("Nhap so luong san pham: ");
+            string? createQuantityInput = Console.ReadLine();
+
+            if (!int.TryParse(createQuantityInput, out int createQuantity) || createQuantity < 0)
+            {
+                Console.WriteLine("So luong san pham khong hop le.");
+                break;
+            }
+
+            int newId = products.Max(product => product.Id) + 1;
+            Product newProduct = new Product(newId, newName, createPrice, createQuantity);
+
+            products.Add(newProduct);
+
+            Console.WriteLine("Them san pham thanh cong:");
+            Console.WriteLine(newProduct);
             break;
 
         case "0":
