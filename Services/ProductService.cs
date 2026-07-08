@@ -26,10 +26,13 @@ public class ProductService : IProductService
 
     public List<Product> SearchByName(string keyword)
     {
+        string normalizedKeyword = keyword.Trim();
+
         return _products
-            .Where(product => product.Name.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+            .Where(product => product.Name.Contains(normalizedKeyword, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
+
 
     public Product Create(string name, decimal price, int quantity)
     {
