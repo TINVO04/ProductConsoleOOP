@@ -16,7 +16,7 @@ public class ProductService : IProductService
 
     public List<Product> GetAll()
     {
-        return _products;
+        return _products.ToList(); //nếu trả thẳng _products, code bên ngoài có thể gọi productService.GetAll().Clear() và làm mất dữ liệu nội bộ.
     }
 
     public Product? GetById(int id)
@@ -27,6 +27,10 @@ public class ProductService : IProductService
     public List<Product> SearchByName(string keyword)
     {
         string normalizedKeyword = keyword.Trim();
+        if (string.IsNullOrWhiteSpace(normalizedKeyword))
+        {
+            return new List<Product>();
+        }
 
         return _products
             .Where(product => product.Name.Contains(normalizedKeyword, StringComparison.OrdinalIgnoreCase))
@@ -36,8 +40,24 @@ public class ProductService : IProductService
 
     public Product Create(string name, decimal price, int quantity)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Product name is required.", nameof(name));
+        }
+
+        if (price <= 0)
+        {
+            throw new ArgumentException("Product price must be greater than 0.", nameof(price));
+        }
+
+        if (quantity < 0)
+        {
+            throw new ArgumentException("Product quantity cannot be negative.", nameof(quantity));
+        }
+
+        string normalizedName = name.Trim();
         int newId = _products.Count == 0 ? 1 : _products.Max(product => product.Id) + 1;
-        Product newProduct = new Product(newId, name, price, quantity);
+        Product newProduct = new Product(newId, normalizedName, price, quantity);
 
         _products.Add(newProduct);
 
@@ -89,6 +109,11 @@ public class ProductService : IProductService
 
     public List<Product> GetLowStockProducts(int threshold)
     {
+        if (threshold <= 0)
+        {
+            return new List<Product>();
+        }
+
         return _products
             .Where(product => product.Quantity < threshold)
             .ToList();

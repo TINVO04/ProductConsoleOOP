@@ -32,6 +32,7 @@ Mục tiêu của project:
 - Biết làm CRUD in-memory trong Console App.
 - Biết tách code theo thư mục rõ ràng.
 - Biết tách logic xử lý sang service và interface.
+- Biết review, refactor và kiểm tra lại mini project trước khi chốt.
 - Biết dùng Git branch, commit, Pull Request và CI cơ bản.
 
 ---
@@ -71,6 +72,8 @@ Chi tiết chức năng:
 - Xử lý input sai bằng `TryParse`.
 - Xử lý trường hợp không tìm thấy dữ liệu.
 - Xử lý trường hợp danh sách rỗng khi sinh Id mới.
+- Service tự validate dữ liệu quan trọng trước khi tạo sản phẩm.
+- Service trả bản copy danh sách để hạn chế code bên ngoài sửa trực tiếp dữ liệu nội bộ.
 
 Lưu ý: dữ liệu hiện là in-memory, nên khi tắt chương trình và chạy lại, danh sách sẽ quay về dữ liệu mẫu ban đầu.
 
@@ -134,10 +137,10 @@ Giải thích nhanh:
 |---|---|
 | `Program.cs` | Điểm bắt đầu chạy chương trình, chứa menu Console và gọi service. |
 | `Interfaces/IProductService.cs` | Interface mô tả các hành động quản lý sản phẩm. |
-| `Services/ProductService.cs` | Service chứa dữ liệu mẫu và logic CRUD sản phẩm. |
+| `Services/ProductService.cs` | Service chứa dữ liệu mẫu, logic CRUD và validate nghiệp vụ sản phẩm. |
 | `Models/Product.cs` | Class Product, đại diện cho sản phẩm. |
 | `Models/Student.cs` | Class Student, dùng cho mini challenge tính tuổi. |
-| `Validators/ProductValidator.cs` | Class kiểm tra dữ liệu sản phẩm. |
+| `Validators/ProductValidator.cs` | Class kiểm tra dữ liệu sản phẩm, dùng để thực hành validate ở Day 2. |
 | `ProductConsoleOOP.csproj` | File cấu hình project .NET. |
 | `.github/workflows/dotnet-ci.yml` | Workflow CI để restore và build project tự động. |
 | `.gitignore` | Khai báo file/thư mục không đưa lên Git. |
@@ -182,7 +185,7 @@ public int Quantity { get; private set; }
 - `foreach`: duyệt từng phần tử trong danh sách.
 - `FirstOrDefault`: tìm một phần tử, có thể trả về null nếu không tìm thấy.
 - `Where`: lọc nhiều phần tử theo điều kiện.
-- `ToList`: chuyển kết quả lọc thành danh sách.
+- `ToList`: chuyển kết quả lọc thành danh sách hoặc tạo bản copy danh sách.
 - `TryParse`: chuyển input từ chuỗi sang số một cách an toàn.
 - `Max`: lấy giá trị lớn nhất trong danh sách.
 - Toán tử 3 ngôi: `condition ? valueIfTrue : valueIfFalse`.
@@ -201,6 +204,14 @@ Ví dụ dùng interface trong menu:
 ```csharp
 IProductService productService = new ProductService();
 ```
+
+### Review và refactor
+
+- Refactor là sửa cấu trúc code để code sạch hơn nhưng không làm thay đổi chức năng chính.
+- Khi refactor cần build và test lại để chắc chắn hành vi cũ không bị hỏng.
+- Service nên tự bảo vệ dữ liệu nội bộ, ví dụ không trả thẳng danh sách private ra ngoài.
+- Service nên validate dữ liệu đầu vào để tránh phụ thuộc hoàn toàn vào UI hoặc Console.
+- Có thể giữ ghi chú trong code khi học, nhưng về sau nên chuyển kiến thức dài sang README hoặc tài liệu riêng.
 
 ---
 
@@ -309,6 +320,31 @@ Checklist:
 
 ---
 
+### Day 5 - Review, refactor và chốt mini project
+
+Đã làm:
+
+- Review tổng thể kiến trúc hiện tại của `Program.cs`, `Product`, `IProductService` và `ProductService`.
+- Xác định một số điểm có thể cải thiện trước khi chốt mini project.
+- Cập nhật `ProductService.GetAll()` để trả bản copy danh sách thay vì trả trực tiếp danh sách nội bộ.
+- Cập nhật `ProductService.SearchByName()` để trả danh sách rỗng nếu keyword rỗng sau khi `Trim()`.
+- Cập nhật `ProductService.Create()` để validate `name`, `price`, `quantity` ở tầng service.
+- Cập nhật `ProductService.Create()` để trim tên sản phẩm trước khi lưu.
+- Cập nhật `ProductService.GetLowStockProducts()` để xử lý threshold không hợp lệ.
+- Build project thành công sau khi cải thiện service.
+
+Checklist:
+
+- [x] Review kiến trúc tổng thể mini project.
+- [x] `GetAll()` không trả thẳng danh sách nội bộ.
+- [x] `SearchByName()` xử lý keyword rỗng hoặc toàn khoảng trắng.
+- [x] `Create()` validate dữ liệu ở tầng service.
+- [x] `Create()` trim tên sản phẩm trước khi lưu.
+- [x] `GetLowStockProducts()` xử lý threshold không hợp lệ.
+- [x] Build pass sau cải thiện service.
+
+---
+
 ## Git workflow
 
 Branch đã thực hành:
@@ -318,6 +354,7 @@ feature/week2-day01-tinvo
 feature/week2-day02-tinvo
 feature/week2-day03-tinvo
 feature/week2-day04-tinvo
+feature/week2-day05-tinvo
 ```
 
 Một số commit tiêu biểu:
@@ -337,6 +374,8 @@ feat: add low stock product filter
 docs: update day 3 readme
 feat: add product service abstraction
 refactor: use product service in console menu
+docs: update day 4 readme
+refactor: improve product service validation
 ```
 
 Quy ước commit:
@@ -354,6 +393,49 @@ Quy ước commit:
 
 ## Ghi chú học tập
 
+### OOP và model
+
+- Class là bản thiết kế, object là dữ liệu cụ thể được tạo từ class.
+- Model như `Product` nên tập trung mô tả dữ liệu và hành vi sát với object đó.
+- `Quantity` dùng `private set` giúp bên ngoài không sửa tồn kho trực tiếp.
+- Các thay đổi tồn kho nên đi qua method như `IncreaseStock()` và `DecreaseStock()` để kiểm soát rule.
+- `ToString()` giúp object in ra màn hình dễ đọc hơn khi debug hoặc hiển thị Console.
+
+### Validate và encapsulation
+
+- Validate giúp chặn dữ liệu sai sớm, ví dụ tên rỗng, giá nhỏ hơn hoặc bằng 0, số lượng âm.
+- Encapsulation giúp dữ liệu không bị sửa tùy tiện từ bên ngoài class.
+- Service cũng nên tự validate dữ liệu, không nên phụ thuộc hoàn toàn vào `Program.cs` hoặc UI.
+- Input từ người dùng nên được xử lý an toàn bằng `TryParse` thay vì parse trực tiếp.
+- Chuỗi nhập từ người dùng nên được `Trim()` để tránh lỗi do khoảng trắng thừa.
+
+### List, CRUD và LINQ
+
+- `List<Product>` phù hợp để thực hành CRUD in-memory.
+- CRUD gồm Create, Read, Update, Delete.
+- `FirstOrDefault()` phù hợp khi tìm một object và chấp nhận trường hợp không tìm thấy.
+- `Where()` phù hợp khi lọc nhiều object theo điều kiện.
+- `ToList()` có thể dùng để chuyển kết quả LINQ thành danh sách hoặc tạo bản copy danh sách.
+- Khi trả danh sách từ service, nên cân nhắc trả bản copy để tránh code bên ngoài sửa trực tiếp dữ liệu nội bộ.
+
+### Service và interface
+
+- `Program.cs` nên tập trung vào menu, nhập input và in output.
+- `ProductService` nên chứa logic nghiệp vụ như thêm, sửa, xóa, tìm kiếm, lọc sản phẩm.
+- `IProductService` đóng vai trò hợp đồng, giúp mô tả service cần có những hành động nào.
+- Tách service giúp code dễ đọc hơn, dễ test hơn và dễ mở rộng hơn.
+- Khi logic bắt đầu dài trong `Program.cs`, đó là dấu hiệu nên tách sang class/service riêng.
+
+### Review và refactor
+
+- Refactor là cải thiện cấu trúc code mà không thay đổi chức năng chính.
+- Sau khi refactor phải build và test lại để chắc chắn không làm hỏng hành vi cũ.
+- Nên review trách nhiệm của từng file: model làm gì, service làm gì, program làm gì.
+- Nên sửa bug nhỏ phát hiện trong lúc test, ví dụ tìm kiếm `lap ` không ra `Laptop`.
+- Không nên refactor quá nhiều một lúc; nên chia commit nhỏ để dễ review.
+
+### Git và quy trình làm việc
+
 - Trước khi commit nên chạy `git status` để xem file nào đang thay đổi.
 - Nên dùng `git diff` để xem nội dung thay đổi trước khi commit.
 - Nên dùng `git diff --staged` để kiểm tra nội dung đã add trước khi commit.
@@ -362,5 +444,3 @@ Quy ước commit:
 - Sau mỗi ngày nên tạo branch riêng và Pull Request riêng.
 - Nếu GitHub báo hai branch có lịch sử khác nhau, có thể cần merge với `--allow-unrelated-histories`.
 - Khi gặp conflict, phải mở file bị conflict, giữ nội dung đúng, xóa conflict marker rồi commit merge.
-- Khi refactor, nên giữ nguyên hành vi cũ trước, sau đó test lại để chắc chắn không làm hỏng chức năng.
-- Khi phát hiện bug nhỏ trong lúc test, nên sửa ngay và ghi nhận trong commit liên quan nếu nó đi cùng phần refactor.
