@@ -17,6 +17,8 @@ while (isRunning)
     Console.WriteLine("===== PRODUCT CONSOLE OOP =====");
     Console.WriteLine("1. Xem danh sach san pham");
     Console.WriteLine("2. Tim san pham theo ten");
+    Console.WriteLine("3. Cap nhat gia va so luong san pham");
+    Console.WriteLine("4. Xoa san pham");
     Console.WriteLine("0. Thoat");
     Console.Write("Nhap lua chon: ");
 
@@ -61,6 +63,84 @@ while (isRunning)
                     Console.WriteLine(product);
                 }
             }
+            break;
+
+        case "3":
+            Console.Write("Nhap Id san pham can cap nhat: ");
+            string? updateIdInput = Console.ReadLine();
+
+            if (!int.TryParse(updateIdInput, out int updateId))
+            {
+                Console.WriteLine("Id khong hop le.");
+                break;
+            }
+
+            Product? productToUpdate = products.FirstOrDefault(product => product.Id == updateId);
+
+            if (productToUpdate == null)
+            {
+                Console.WriteLine("Khong tim thay san pham can cap nhat.");
+                break;
+            }
+
+            Console.WriteLine("San pham hien tai:");
+            Console.WriteLine(productToUpdate);
+
+            Console.Write("Nhap gia moi: ");
+            string? newPriceInput = Console.ReadLine();
+
+            if (!decimal.TryParse(newPriceInput, out decimal newPrice) || newPrice <= 0)
+            {
+                Console.WriteLine("Gia moi khong hop le.");
+                break;
+            }
+
+            Console.Write("Nhap so luong moi: ");
+            string? newQuantityInput = Console.ReadLine();
+
+            if (!int.TryParse(newQuantityInput, out int newQuantity) || newQuantity < 0)
+            {
+                Console.WriteLine("So luong moi khong hop le.");
+                break;
+            }
+
+            productToUpdate.Price = newPrice;
+
+            int quantityDifference = newQuantity - productToUpdate.Quantity;
+
+            if (quantityDifference > 0)
+            {
+                productToUpdate.IncreaseStock(quantityDifference);
+            }
+            else if (quantityDifference < 0)
+            {
+                productToUpdate.DecreaseStock(Math.Abs(quantityDifference));
+            }
+
+            Console.WriteLine("Cap nhat san pham thanh cong:");
+            Console.WriteLine(productToUpdate);
+            break;
+
+        case "4":
+            Console.Write("Nhap Id san pham can xoa: ");
+            string? deleteIdInput = Console.ReadLine();
+
+            if (!int.TryParse(deleteIdInput, out int deleteId))
+            {
+                Console.WriteLine("Id khong hop le.");
+                break;
+            }
+
+            Product? productToDelete = products.FirstOrDefault(product => product.Id == deleteId);
+
+            if (productToDelete == null)
+            {
+                Console.WriteLine("Khong tim thay san pham can xoa.");
+                break;
+            }
+
+            products.Remove(productToDelete);
+            Console.WriteLine("Xoa san pham thanh cong.");
             break;
 
         case "0":
