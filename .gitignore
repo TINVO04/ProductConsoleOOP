@@ -17,6 +17,9 @@ obj/
 *.xlsx
 ~$*
 
+# Local AI working process / private notes
+AI_WORKING_PROCESS_LOCAL.md
+
 # Logs
 *.log
 
